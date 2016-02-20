@@ -18,8 +18,8 @@ Thumbs.db
 
 web/bundles/*
 web/media/*
-web/css/*
-web/js/*
+#web/css/*
+#web/js/*
 web/app_local.php
 web/images/screenshots
 
