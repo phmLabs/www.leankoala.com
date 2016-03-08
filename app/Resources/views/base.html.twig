@@ -31,7 +31,13 @@
     <link rel='stylesheet' href='/css/theme_two.css' type='text/css' media='all'/>
 
     <!-- koalamon js files -->
-    <script src="{{ asset('bundles/koalamondefault/js/project_status.js') }}"></script>
+    {% javascripts '@KoalamonDefaultBundle/Resources/public/js/*' %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    {% stylesheets '@KoalamonDefaultBundle/Resources/public/css/*' %}
+    <link rel="stylesheet" href="{{ asset_url }}">
+    {% endstylesheets %}
 
     <!-- external fonts -->
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
@@ -67,26 +73,18 @@
 
 <body>
 
+<!-- modal content -->
+<div id='confirm'>
+    <div class='header'><span>Confirm</span></div>
+    <div class='message'></div>
+    <div class='buttons'>
+        <div class='no simplemodal-close'>No</div>
+        <div class='yes'>Yes</div>
+    </div>
+</div>
+
 <div id="sitebar">
     <a href="{{ path('koalamon_default_homepage') }}"><img src="/images/logo.png" width="150" style="margin-top: 30px; margin-left: 15px"></a>
-    {#
-    {% if app.user.username is defined and app.user.hasFavoriteProjects %}
-        <div class="sitebar-block">
-            <h2><a href="{{ path("koalamon_user_homepage") }}">Favorites</a></h2>
-            <ul>
-                {% for myproject in app.user.favoriteProjects %}
-                    <li>
-                    <span class="{% if project is defined and not project is null and project.id == myproject.id %}selected{% endif %}"><a
-                                href="{{ path('bauer_incident_dashboard_core_homepage', {'project': myproject.identifier }) }}">{{ myproject.name }}</a></span>
-                        {% if myproject.openIncidentCount > 0 %}
-                            <div class="counter warning">{{ myproject.openIncidentCount }}</div>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-#}
     {% if app.user.username is defined %}
         <div class="sitebar-block">
             <h2><a href="{{ path("koalamon_user_homepage") }}">Projects</a></h2>
@@ -102,7 +100,7 @@
                         {% if project is defined and not project is null and project.id == myproject.id %}
                             <ul class="submenu">
                                 <li>
-                                    <a href="{{ path("bauer_incident_dashboard_core_homepage", {"project": project.identifier} ) }}">Status</a>
+                                    <a class="confirm" href="{{ path("bauer_incident_dashboard_core_homepage", {"project": project.identifier} ) }}">Status</a>
 
                                     <div class="counter">{{ myproject.openIncidentCount }}</div>
                                 </li>
@@ -190,8 +188,9 @@
 </div>
 
 <script>
-    $('.tipso').tipso({
-        size: 'small'
+    $(function () {
+        var modalHandler = new ModalHandler();
+        modalHandler.initConfirm('.confirm');
     });
 </script>
 {% block javascripts %}{% endblock %}
